@@ -1,0 +1,127 @@
+public class Person {
+    private String firstName;
+    private String lastName;
+    private int age;
+
+    public Person(String firstName, String lastName, int age) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public boolean isRetired() {
+        return age >= 60;
+    }
+}
+
+public class Man extends Person {
+    private Woman partner;
+    private boolean hasChangedLastName;
+
+    public Man(String firstName, String lastName, int age) {
+        super(firstName, lastName, age);
+        this.partner = null;
+        this.hasChangedLastName = false;
+    }
+
+    public Woman getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Woman partner) {
+        if (this.partner != null) {
+            this.partner.deregisterPartnership(false);
+        }
+        this.partner = partner;
+        if (partner != null) {
+            this.hasChangedLastName = true;
+            partner.registerPartnership(lastName);
+        }
+    }
+
+    public boolean hasChangedLastName() {
+        return hasChangedLastName;
+    }
+
+    public void setHasChangedLastName(boolean hasChangedLastName) {
+        this.hasChangedLastName = hasChangedLastName;
+    }
+
+    public void deregisterPartnership(boolean hasChangedLastName) {
+        if (partner != null) {
+            partner.deregisterPartnership(hasChangedLastName);
+            partner = null;
+        }
+        this.hasChangedLastName = false;
+    }
+}
+
+public class Woman extends Person {
+    private Man partner;
+    private String originalLastName;
+
+    public Woman(String firstName, String lastName, int age) {
+        super(firstName, lastName, age);
+        this.partner = null;
+        this.originalLastName = lastName;
+    }
+
+    public Man getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Man partner) {
+        if (this.partner != null) {
+            this.partner.deregisterPartnership(false);
+        }
+        this.partner = partner;
+        if (partner != null) {
+            partner.setHasChangedLastName(true);
+            setLastName(partner.getLastName());
+        }
+    }
+
+    public String getOriginalLastName() {
+        return originalLastName;
+    }
+
+    public void setOriginalLastName(String originalLastName) {
+        this.originalLastName = originalLastName;
+    }
+
+    public void registerPartnership(String partnerLastName) {
+        originalLastName = getLastName();
+        setLastName(partnerLastName);
+    }
+
+    public void deregisterPartnership(boolean hasChangedLastName) {
+        if (hasChangedLastName) {
+            setLastName(originalLastName);
+        }
+        partner = null;
+    }
+}
